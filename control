@@ -1,0 +1,9 @@
+Package: com.ning.petdfylyric
+Name: PetDFY 在线歌词
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: 在线歌词浮窗（lrclib），随系统正在播放显示当前行
+Maintainer: Ning
+Author: Ning
+Section: Tweaks
+Depends: mobilesubstrate, firmware (>= 15.0)

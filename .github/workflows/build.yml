@@ -1,0 +1,31 @@
+name: PetDFYLyric build
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15-intel
+    env:
+      THEOS: /tmp/petdfylyric-theos
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependencies
+        run: |
+          brew install ldid dpkg
+      - name: Toolchain
+        run: |
+          git clone --recursive --depth 1 https://github.com/roothide/theos.git "$THEOS"
+          git clone --depth 1 https://github.com/theos/sdks.git /tmp/sdks
+          cp -R /tmp/sdks/iPhoneOS16.5.sdk "$THEOS/sdks/"
+      - name: Build
+        run: |
+          sh scripts/build_ci.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PetDFYLyric-1.0.0-roothide
+          path: |
+            packages/*.deb
+            build/*.txt
+            build/SHA256SUMS
+          if-no-files-found: error
