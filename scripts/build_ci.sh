@@ -5,15 +5,17 @@ THEOS="${THEOS:-}"
 : "${THEOS:?Set THEOS}"
 test -d "$THEOS/sdks/iPhoneOS16.5.sdk"
 SDK="$THEOS/sdks/iPhoneOS16.5.sdk"
-SUPPORT="$THEOS/vendor/lib"
-mkdir -p build stage/DEBIAN stage/Library/MobileSubstrate/DynamicLibraries
+SUPPORT="$PWD/Support/lib/roothide"
+rm -rf build stage packages
+mkdir -p build stage/DEBIAN stage/Library/MobileSubstrate/DynamicLibraries packages
 # Host test (macOS clang supports ObjC ARC)
 clang -fobjc-arc -fblocks -Wall -Wextra -Werror -Wno-unused-parameter tests/LyricLogic.m -framework Foundation -o build/lyric-logic-test
 ./build/lyric-logic-test | tee build/lyric-logic.txt
-# arm64e dynamic library
+# RootHide arm64e dynamic library. The compatibility header and .tbd are
+# checked into this repository so CI does not depend on Theos submodules.
 clang -target arm64e-apple-ios15.0 -isysroot "$SDK" -miphoneos-version-min=15.0 \
   -fobjc-arc -fvisibility=hidden -O2 -dynamiclib \
-  -IHeaders -ISources -I"$THEOS/vendor/include" -DAPELIN_BUILD_ID='"local"' \
+  -IHeaders -ISources -DAPELIN_BUILD_ID='"local"' \
   Hooks/PDLyricMain.m Sources/PDLyricController.m \
   -L"$SUPPORT" -lsubstrate -framework UIKit -framework Foundation -framework CoreFoundation -framework QuartzCore -framework Security \
   -o build/PDLyric.dylib
