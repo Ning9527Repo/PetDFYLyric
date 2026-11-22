@@ -4,7 +4,8 @@
 int main(void) { @autoreleasepool {
     NSArray *tl=PDLyric_parseLRC(@"[00:01.00]第一句\n[00:05.50]第二句\n[01:02.25]第三句");
     assert(tl.count==3);
-    assert([PDLyric_lineAt(tl,0.5) isEqual:@"第一句"]);
+    assert(!PDLyric_lineAt(tl,0.5));
+    assert([PDLyric_lineAt(tl,1.0) isEqual:@"第一句"]);
     assert([PDLyric_lineAt(tl,3.0) isEqual:@"第一句"]);
     assert([PDLyric_lineAt(tl,5.5) isEqual:@"第二句"]);
     assert([PDLyric_lineAt(tl,62.3) isEqual:@"第三句"]);
