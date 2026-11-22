@@ -19,7 +19,11 @@ int main(void) { @autoreleasepool {
     NSArray *picked=PDLyric_pickTimeline(rows,222.0);
     assert(picked.count==2 && [picked[0][@"text"] isEqual:@"A"]);
     assert(!PDLyric_pickTimeline(@[],100));
-    assert(!PDLyric_pickTimeline(rows,100));
+    NSArray *none=@[
+      @{@"duration":@200.0,@"instrumental":@YES,@"syncedLyrics":@"[00:01.00]P"},
+      @{@"duration":@500.0,@"instrumental":@NO,@"plainLyrics":@"no time"},
+    ];
+    assert(!PDLyric_pickTimeline(none,100));
     NSURL *u=PDLyric_searchURL(@"半壶纱",@"刘珂矣");
     assert([u.query containsString:@"track_name=%E5%8D%8A%E5%A3%B6%E7%BA%B1"]);
     puts("PASS PDLyric logic: LRC boundaries, nearest synced selection, URL encoding");
